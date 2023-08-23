@@ -62,31 +62,17 @@ void Parser::Parse() {
 }
 
 void Parser::Label() {
-    li->CheckLabel(token->literal);
+    li->CheckLabel(token->literal, token->metadata);
     Match(TokenType::Symbol);
     NextToken();
-    //Match(TokenType::Colon);
-  
-    /*while (!CheckPeek(TokenType::Label)) {
-        NextToken();
-    }
-
-    if (!CheckToken(TokenType::Symbol)) {
-        // Throw error
-        throw std::invalid_argument( "received negative value" );
-    }*/
-
+    
+    // TODO: Why?
     NextToken();
 }
 
-
-/*void Parser::Label() {
-    Match(TokenType::Symbol);
-    NextToken();
-}*/
-
 void Parser::Instruction() {
     std::string instruction = token->literal;
+    TokenMetadata metadata = token->metadata;
     std::vector<std::string> operands;
     
     NextToken();
@@ -103,7 +89,7 @@ void Parser::Instruction() {
 
     }
 
-    li->CheckInstruction(instruction, operands);
+    li->CheckInstruction(instruction, operands, metadata);
 }
 
 void Parser::Directive() {
@@ -128,20 +114,6 @@ void Parser::Directive() {
         }
     }
 }
-/*
-void Parser::Instruction() {
-    NextToken();
-
-    // Is there at least one operand?
-    if(!CheckToken(TokenType::Newline) && !CheckToken(TokenType::Comment)) {
-        Operand();
-        // Zero or more operands.
-        while(CheckToken(TokenType::Comma)) {
-            NextToken();
-            Operand();
-        }
-    }
-}*/
 
 void Parser::Operand() {
     // Optional sign.

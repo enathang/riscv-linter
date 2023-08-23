@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     std::string source((std::istreambuf_iterator<char>(inFile)), std::istreambuf_iterator<char>());
     source += '\n';
     
-    std::ifstream inDictionaryFile("opcodes");
+    std::ifstream inDictionaryFile("src/opcodes");
     std::string dictionarySource((std::istreambuf_iterator<char>(inDictionaryFile)), std::istreambuf_iterator<char>());
     dictionarySource += '\n';
 
@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
     Lexer *l = new Lexer(source);
     Parser *p = new Parser(l, li);
     p->Parse();
-    std::cout << "Parsed successfully." << std::endl;
+    std::cout << "Parsed successfully (" << l->GetLineNumber() << " lines)" << std::endl;
 
     delete d;
     delete li;

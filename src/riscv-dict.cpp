@@ -64,11 +64,26 @@ RiscvDict::RiscvDict(std::string fileContents) {
     };
     (*dict)["bgt"] = InstructionSignature {
         "bgt",
-        { CONSTANT }
+        { READ, READ, CONSTANT }
+    };
+    (*dict)["not"] = InstructionSignature {
+        "not",
+        { WRITE, READ }
+    };
+    (*dict)["and"] = InstructionSignature {
+        "and",
+        { WRITE, READ, READ }
+    };
+    (*dict)["mv"] = InstructionSignature {
+        "mv",
+        { WRITE, READ }
+    };
+    (*dict)["add"] = InstructionSignature {
+        "add",
+        { WRITE, READ, READ }
     };
 
-
-    Dump();
+    // Dump();
 }
 
 void RiscvDict::Dump() {

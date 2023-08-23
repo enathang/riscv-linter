@@ -7,6 +7,7 @@ private:
     Linter* li;
     Token* token;
     Token* peek;
+
 public:
     // Helper functions.
     Parser(Lexer* l, Linter* li);

@@ -7,6 +7,7 @@
 Lexer::Lexer(std::string source) {
     this->source = source;
     pos = 0;
+    lineNumber = 1;
     NextChar(); // Initialize lexer with first character.
 }
 
@@ -36,8 +37,10 @@ Token* Lexer::NextToken() {
         case '\r': case '\n':
             t->type = TokenType::Newline;
             // Reduce consecutive newlines to one (even if spaces are between them). 
-            while(IsNewline() || IsSpace()) 
+            while(IsNewline() || IsSpace()) {
+                if (IsNewline()) lineNumber++;
                 NextChar();
+            }
             break;
         case '+':
             t->type = TokenType::Plus;
@@ -101,6 +104,7 @@ Token* Lexer::NextToken() {
                 }
             }
     }
+    t->metadata = TokenMetadata { lineNumber };
     return t;
 }
 
@@ -128,4 +132,8 @@ bool Lexer::IsSpace() {
 void Lexer::SkipSpaces() {
     while(IsSpace()) 
         NextChar();
+}
+
+int Lexer::GetLineNumber() {
+    return lineNumber;
 }
