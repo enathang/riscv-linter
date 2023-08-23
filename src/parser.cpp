@@ -1,10 +1,15 @@
+#include <stdexcept>
+
+#include <string>
 #include <iostream>
 #include <cstdlib>
 #include "parser.h"
 #include "lexer.h"
+#include "token.h"
 
-Parser::Parser(Lexer* l) {
+Parser::Parser(Lexer* l, Linter* li) {
     this->l = l;
+    this->li = li;
     token = NULL;
     peek = NULL;
     NextToken(); // Call twice to initialize token and peek.
@@ -57,8 +62,48 @@ void Parser::Parse() {
 }
 
 void Parser::Label() {
+    li->CheckLabel(token->literal);
     Match(TokenType::Symbol);
     NextToken();
+    //Match(TokenType::Colon);
+  
+    /*while (!CheckPeek(TokenType::Label)) {
+        NextToken();
+    }
+
+    if (!CheckToken(TokenType::Symbol)) {
+        // Throw error
+        throw std::invalid_argument( "received negative value" );
+    }*/
+
+    NextToken();
+}
+
+
+/*void Parser::Label() {
+    Match(TokenType::Symbol);
+    NextToken();
+}*/
+
+void Parser::Instruction() {
+    std::string instruction = token->literal;
+    std::vector<std::string> operands;
+    
+    NextToken();
+
+    if(!CheckToken(TokenType::Newline) && !CheckToken(TokenType::Comment)) {
+        operands.push_back(token->literal);
+        Operand();
+        // Zero or more operands.
+        while(CheckToken(TokenType::Comma)) {
+            NextToken();
+            operands.push_back(token->literal);
+            Operand();
+        }
+
+    }
+
+    li->CheckInstruction(instruction, operands);
 }
 
 void Parser::Directive() {
@@ -83,7 +128,7 @@ void Parser::Directive() {
         }
     }
 }
-
+/*
 void Parser::Instruction() {
     NextToken();
 
@@ -96,7 +141,7 @@ void Parser::Instruction() {
             Operand();
         }
     }
-}
+}*/
 
 void Parser::Operand() {
     // Optional sign.

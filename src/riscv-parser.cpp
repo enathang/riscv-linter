@@ -19,12 +19,20 @@ int main(int argc, char* argv[]) {
     std::ifstream inFile(argv[1]);
     std::string source((std::istreambuf_iterator<char>(inFile)), std::istreambuf_iterator<char>());
     source += '\n';
+    
+    std::ifstream inDictionaryFile("opcodes");
+    std::string dictionarySource((std::istreambuf_iterator<char>(inDictionaryFile)), std::istreambuf_iterator<char>());
+    dictionarySource += '\n';
 
+    RiscvDict *d = new RiscvDict(dictionarySource);
+    Linter *li = new Linter(d);
     Lexer *l = new Lexer(source);
-    Parser *p = new Parser(l);
+    Parser *p = new Parser(l, li);
     p->Parse();
     std::cout << "Parsed successfully." << std::endl;
 
+    delete d;
+    delete li;
     delete l;
     delete p;
     return 0;
