@@ -12,14 +12,16 @@ enum TokenType {
     Comma,
     Newline,
     Comment,
+    Annotation,
     EndOfFile
 };
 
 struct TokenMetadata {
+    std::string fileName;
     int lineNumber;
 };
 
-const char* const TokenTypeStrings[] = {"Symbol", "Left-Parenthesis", "Right-Parenthesis", "Plus", "Minus", "Dot", "Colon", "Comma", "Newline", "Comment", "End-Of-File"};
+const char* const TokenTypeStrings[] = {"Symbol", "Left-Parenthesis", "Right-Parenthesis", "Plus", "Minus", "Dot", "Colon", "Comma", "Newline", "Comment", "Annotation", "End-Of-File"};
 
 class Token {
 public:

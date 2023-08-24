@@ -16,19 +16,25 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    std::ifstream inFile(argv[1]);
+    std::string fileName = argv[1];
+    std::ifstream inFile(fileName);
     std::string source((std::istreambuf_iterator<char>(inFile)), std::istreambuf_iterator<char>());
     source += '\n';
     
-    std::ifstream inDictionaryFile("src/opcodes");
+    std::ifstream inDictionaryFile("src/linter/opcodes");
     std::string dictionarySource((std::istreambuf_iterator<char>(inDictionaryFile)), std::istreambuf_iterator<char>());
     dictionarySource += '\n';
 
     RiscvDict *d = new RiscvDict(dictionarySource);
     Linter *li = new Linter(d);
-    Lexer *l = new Lexer(source);
+    Lexer *l = new Lexer(source, fileName);
     Parser *p = new Parser(l, li);
     p->Parse();
+
+    for (std::string warning : li->linterWarnings) {
+        std::cout << "Linter warning: " << warning << "\n";
+    }
+
     std::cout << "Parsed successfully (" << l->GetLineNumber() << " lines)" << std::endl;
 
     delete d;

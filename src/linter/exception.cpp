@@ -6,7 +6,3 @@ LinterException::LinterException(char const* const message) throw() : std::runti
 
 }
 
-/*
-char const * LinterException::what() const throw() {
-    return std::exception::what();
-}*/

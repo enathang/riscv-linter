@@ -4,8 +4,9 @@
 
 #define EOFConstant 3 // Using 0 is annoying for debugging.
 
-Lexer::Lexer(std::string source) {
+Lexer::Lexer(std::string source, std::string fileName) {
     this->source = source;
+    this->fileName = fileName;
     pos = 0;
     lineNumber = 1;
     NextChar(); // Initialize lexer with first character.
@@ -70,12 +71,19 @@ Token* Lexer::NextToken() {
             t->type = TokenType::Colon;
             NextChar();
             break;
-        case '#':
-            t->type = TokenType::Comment;
-            NextChar();
-            while(!IsNewline()) { // Continue until newline.
-                t->literal += ch;
+        case '#': 
+            // Here we reserve the #: token for linter annotation
+            if (PeekChar() == ':') {
+                t->type = TokenType::Annotation;
                 NextChar();
+            } else {
+                // Otherwise it's just a regular comment
+                t->type = TokenType::Comment;
+                NextChar();
+                while(!IsNewline()) { // Continue until newline.
+                    t->literal += ch;
+                    NextChar();
+                }
             }
             break;
         case EOFConstant: case 0:
@@ -104,7 +112,7 @@ Token* Lexer::NextToken() {
                 }
             }
     }
-    t->metadata = TokenMetadata { lineNumber };
+    t->metadata = TokenMetadata { fileName, lineNumber };
     return t;
 }
 
@@ -127,6 +135,10 @@ bool Lexer::IsNewline() {
 
 bool Lexer::IsSpace() {
     return ch == ' ' || ch == '\t';
+}
+
+bool Lexer::IsColon() {
+    return ch == ':';
 }
 
 void Lexer::SkipSpaces() {

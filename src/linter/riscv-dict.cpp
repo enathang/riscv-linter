@@ -41,26 +41,13 @@ RiscvDict::RiscvDict(std::string fileContents) {
         "csrw",
         { WRITE, READ }
     };
-    (*dict)["print"] = InstructionSignature {
-        "print",
-        { CONSTANT }
-    };
-    (*dict)["push"] = InstructionSignature {
-        "push",
-        { CONSTANT }
-    };
-    
-    (*dict)["pop"] = InstructionSignature {
-        "pop",
-        { CONSTANT }
-    };
     (*dict)["call"] = InstructionSignature {
         "call",
         { CONSTANT }
     };
     (*dict)["ret"] = InstructionSignature {
         "ret",
-        { CONSTANT }
+        { }
     };
     (*dict)["bgt"] = InstructionSignature {
         "bgt",
@@ -83,6 +70,22 @@ RiscvDict::RiscvDict(std::string fileContents) {
         { WRITE, READ, READ }
     };
 
+    // Below are some custom macro definitions I use in my operating system
+    (*dict)["print"] = InstructionSignature {
+        "print",
+        { CONSTANT }
+    };
+    (*dict)["push"] = InstructionSignature {
+        "push",
+        {  }
+    };
+    
+    (*dict)["pop"] = InstructionSignature {
+        "pop",
+        {  }
+    };
+
+    // Uncomment Dump() to see the built RiscvDict for debugging 
     // Dump();
 }
 
@@ -102,7 +105,7 @@ OperandRole RiscvDict::DetermineOperandRole(std::string operand) {
     std::vector<std::string> writeRegisters = { "rd" };
     std::vector<std::string> readRegisters = { "rs1", "rs2" };
     std::vector<std::string> constantOperands = { 
-        "imm20", "oimm20", "jimm20", "imm12", "oimm12", "sbimm12", "simm12", "shamt5", "shamt6", "shamt7" 
+        "imm20", "oimm20", "jimm20", "imm12", "shamt5", "shamt6", "shamt7" 
     };
 
     if (std::find(writeRegisters.begin(), writeRegisters.end(), operand) != writeRegisters.end()) {
@@ -149,9 +152,9 @@ void RiscvDict::ConstructFromFile(std::string fileContents) {
 }
 
 InstructionSignature RiscvDict::GetInstructionSignature(std::string name) {
-    // Check key exists in map, otherwise directly accessing it will segfault
+    // Check key exists in map, to prevent segfaults 
     if ((*dict).find(name) == (*dict).end()) {
-        std::string msg = "Could not find instruction signature for " + name;
+        std::string msg = "Could not find instruction signature for " + name + " (it might be a macro definition that hasn't been expanded)";
         throw LinterException(msg.c_str());
     }
 

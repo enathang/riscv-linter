@@ -6,6 +6,7 @@
 #include "parser.h"
 #include "lexer.h"
 #include "token.h"
+#include "linter/exception.h"
 
 Parser::Parser(Lexer* l, Linter* li) {
     this->l = l;
@@ -56,8 +57,32 @@ void Parser::Parse() {
         if(CheckToken(TokenType::Comment)) {
             NextToken();
         }
+        else if(CheckToken(TokenType::Annotation)) {
+            Annotation();
+        }
 
         Match(TokenType::Newline);
+    }
+
+    li->Finish(*token);
+}
+
+void Parser::Annotation() {
+    // Consume '#'
+    NextToken();
+    // Since it's an annotation, we should already know the next token is a colon, but verify anyway
+    CheckToken(TokenType::Colon);
+    NextToken();
+    if (CheckToken(TokenType::Plus)) {
+        NextToken();
+        li->PushValueOntoStack(*token);
+        NextToken();
+    } else if (CheckToken(TokenType::Minus)) {
+        NextToken();
+        li->PopValueOffStack(*token);
+        NextToken();
+    } else {
+        throw LinterException("The notation '#:' is reserved for the linter and expects '+' or '-' after it");
     }
 }
 
@@ -88,7 +113,7 @@ void Parser::Instruction() {
         }
 
     }
-
+    
     li->CheckInstruction(instruction, operands, metadata);
 }
 

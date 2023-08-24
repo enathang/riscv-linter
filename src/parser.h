@@ -1,5 +1,5 @@
 #include "lexer.h"
-#include "linter.h"
+#include "linter/linter.h"
 
 class Parser {
 private:
@@ -22,4 +22,5 @@ public:
     void Directive();
     void Instruction();
     void Operand();
+    void Annotation();
 };

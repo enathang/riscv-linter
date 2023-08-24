@@ -7,3 +7,10 @@ _increment_no_ret:
 _random_label:
 	.skip 4096
 
+_func_jump:
+	li t0, 1
+	j _increment_no_ret
+
+# Check that the linter still works at the end of the file
+_func_no_ret_2:
+	li t0, 0
