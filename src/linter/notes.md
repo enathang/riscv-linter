@@ -11,12 +11,10 @@ Bug list:
 - Parser
     - The parser will error on (t0) (but not 0(t0))
     - The parser does not recognize `/*` and `*/`
-    - Does not support macros with arguments 
+    - The parser does not support macros with arguments 
 - Linter
-    - The linter will recognize `mv t0, s0` as a way of copying a register value but not `addi t0, s0, 0` even though they're functionally the same (and `mv` even assembles down to the `addi` instruction). 
+    - The linter will recognize `mv t0, s0` as a way of copying a register value but not `addi t0, s0, 0` even though they're functionally the same (and `mv` even assembles down to the `addi` instruction).
+- RiscvDict
+    - Dictionary does not recognize pseudo-ops (except for the ones I've hardcoded)
+    - Dictionary does not recognize non-ABI register names (`x0, x1. ...`)
 
-
-Todo:
-- Fix above bugs
-- Remove hardcoded addition to RiscvDict
-- Add annotations to add/remove register values to/from linter stack

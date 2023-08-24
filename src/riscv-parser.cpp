@@ -1,6 +1,8 @@
 // Example parser for RISC-V assembly.
 // Austin Henley
 // 10/5/2020
+// Nathan Gifford
+// 08/24/2023
 
 #include <string>
 #include <iostream>
